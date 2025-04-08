@@ -58,14 +58,17 @@ func main() {
 	fmt.Print("\n\n\r")
 
 	colorTest(Color256)
+
+	drawAt(20*4, 15,
+		BG256+"99m"+
+			Color256+"196m"+" 45"+
+			Reset+Break)
+
+	drawAt(1, 22, Break)
+
 	colorTest(BG256)
 
 	fmt.Print("\n\n\r")
-
-	fmt.Print(
-		BG256 + "99m" +
-			Color256 + "196m" + " 45" +
-			Reset + Break)
 }
 
 func clearScreen() {
