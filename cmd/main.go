@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"math/rand/v2"
 	"strconv"
 	"time"
@@ -40,10 +41,12 @@ const (
 func main() {
 	clearScreen()
 
-	for range 1000 {
+	for range 500 {
 		randomDraws(1)
-		time.Sleep(time.Millisecond * 2)
+		time.Sleep(time.Millisecond)
 	}
+
+	drawAt(1, 11, Break)
 
 	// drawAt(2, 2, colored('Ÿ', Black))
 	// drawAt(1, 2, colored('Ÿ', BrightBlack))
@@ -72,11 +75,21 @@ func main() {
 	// 		Color256+"196m"+" 45"+
 	// 		Reset+Break)
 
-	// drawAt(1, 22, Break)
-
 	// colorTest(BG256)
 
-	drawAt(1, 21, Break)
+	radius := 25
+
+	ycenter := 20
+	xcenter := 70
+
+	for i := range 360 {
+		x := float64(xcenter) + float64(radius)*math.Sin(float64(i))
+		y := float64(ycenter) + 0.5*float64(radius)*math.Cos(float64(i))
+		drawAt(int(x), int(y), colored('-', BrightGreen))
+		// time.Sleep(time.Millisecond * 100)
+	}
+
+	drawAt(1, ycenter*3, Break)
 }
 
 func clearScreen() {
@@ -99,17 +112,7 @@ func colorTest(scape string) {
 		for j := range 16 {
 			index := i*16 + j
 			code := strconv.Itoa(index)
-			padding := ""
-			if index > 9 {
-				padding = " "
-			}
-			if index < 10 {
-				padding = "  "
-			}
-			if index >= 100 {
-				padding = ""
-			}
-			fmt.Print(scape + code + "m " + padding + code)
+			fmt.Print(scape + code + "m Ÿ")
 		}
 		fmt.Print(Reset, "\n\r")
 	}
@@ -126,5 +129,5 @@ func randomDraws(offset int) {
 
 	drawAt(x, y+offset,
 		BG256+sbg+"m"+
-			Color256+sfg+"m"+"~"+Reset)
+			Color256+sfg+"m"+"Ÿ"+Reset)
 }
