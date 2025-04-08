@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"math/rand/v2"
 	"strconv"
+	"time"
 )
 
 const (
@@ -31,48 +33,54 @@ const (
 	Reset   string = ESC + "[0m"
 	NoColor string = ""
 
-	Break string = "\n\r"
+	TopLeft string = ESC + "[H"
+	Break   string = "\n\r"
 )
 
 func main() {
 	clearScreen()
 
-	drawAt(2, 2, colored('Ÿ', Black))
-	drawAt(1, 2, colored('Ÿ', BrightBlack))
-	drawAt(4, 2, colored('Ÿ', Red))
-	drawAt(3, 2, colored('Ÿ', BrightRed))
-	drawAt(6, 2, colored('Ÿ', Green))
-	drawAt(5, 2, colored('Ÿ', BrightGreen))
-	drawAt(8, 2, colored('Ÿ', Yellow))
-	drawAt(7, 2, colored('Ÿ', BrightYellow))
-	drawAt(2, 3, colored('Ÿ', Blue))
-	drawAt(1, 3, colored('Ÿ', BrightBlue))
-	drawAt(4, 3, colored('Ÿ', Magenta))
-	drawAt(3, 3, colored('Ÿ', BrightMagenta))
-	drawAt(6, 3, colored('Ÿ', Cyan))
-	drawAt(5, 3, colored('Ÿ', BrightCyan))
-	drawAt(8, 3, colored('Ÿ', White))
-	drawAt(7, 3, colored('Ÿ', BrightWhite))
-	drawAt(5, 4, colored('Ÿ', NoColor))
+	for range 1000 {
+		randomDraws(1)
+		time.Sleep(time.Millisecond * 2)
+	}
 
-	fmt.Print("\n\n\r")
+	// drawAt(2, 2, colored('Ÿ', Black))
+	// drawAt(1, 2, colored('Ÿ', BrightBlack))
+	// drawAt(4, 2, colored('Ÿ', Red))
+	// drawAt(3, 2, colored('Ÿ', BrightRed))
+	// drawAt(6, 2, colored('Ÿ', Green))
+	// drawAt(5, 2, colored('Ÿ', BrightGreen))
+	// drawAt(8, 2, colored('Ÿ', Yellow))
+	// drawAt(7, 2, colored('Ÿ', BrightYellow))
+	// drawAt(2, 3, colored('Ÿ', Blue))
+	// drawAt(1, 3, colored('Ÿ', BrightBlue))
+	// drawAt(4, 3, colored('Ÿ', Magenta))
+	// drawAt(3, 3, colored('Ÿ', BrightMagenta))
+	// drawAt(6, 3, colored('Ÿ', Cyan))
+	// drawAt(5, 3, colored('Ÿ', BrightCyan))
+	// drawAt(8, 3, colored('Ÿ', White))
+	// drawAt(7, 3, colored('Ÿ', BrightWhite))
+	// drawAt(5, 4, colored('Ÿ', NoColor))
 
-	colorTest(Color256)
+	// fmt.Print("\n\n\r")
 
-	drawAt(20*4, 15,
-		BG256+"99m"+
-			Color256+"196m"+" 45"+
-			Reset+Break)
+	// colorTest(Color256)
 
-	drawAt(1, 22, Break)
+	// drawAt(20*4, 15,
+	// 	BG256+"99m"+
+	// 		Color256+"196m"+" 45"+
+	// 		Reset+Break)
 
-	colorTest(BG256)
+	// drawAt(1, 22, Break)
 
-	fmt.Print("\n\n\r")
+	// colorTest(BG256)
+
+	drawAt(1, 21, Break)
 }
 
 func clearScreen() {
-	fmt.Print("\x1b[2J\x1b[H")
+	fmt.Print("\x1b[2J", TopLeft)
 }
 
 func drawAt(x, y int, char string) {
@@ -105,4 +113,18 @@ func colorTest(scape string) {
 		}
 		fmt.Print(Reset, "\n\r")
 	}
+}
+
+func randomDraws(offset int) {
+	x := rand.IntN(30)
+	y := rand.IntN(10)
+	bg := rand.IntN(256)
+	fg := rand.IntN(256)
+
+	sbg := strconv.Itoa(bg)
+	sfg := strconv.Itoa(fg)
+
+	drawAt(x, y+offset,
+		BG256+sbg+"m"+
+			Color256+sfg+"m"+"~"+Reset)
 }
