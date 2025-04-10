@@ -38,15 +38,13 @@ const (
 	Break   string = "\n\r"
 )
 
+type drawData struct {
+	x, y int
+	data string
+}
+
 func main() {
 	clearScreen()
-
-	for range 500 {
-		randomDraws(1)
-		time.Sleep(time.Millisecond)
-	}
-
-	drawAt(1, 11, Break)
 
 	// drawAt(2, 2, colored('Ÿ', Black))
 	// drawAt(1, 2, colored('Ÿ', BrightBlack))
@@ -77,16 +75,37 @@ func main() {
 
 	// colorTest(BG256)
 
-	radius := 25
+	schan := make(chan drawData)
+	close := 0
 
-	ycenter := 20
-	xcenter := 70
+	ycenter := 15
+	xcenter := 40
 
-	for i := range 360 {
-		x := float64(xcenter) + float64(radius)*math.Sin(float64(i))
-		y := float64(ycenter) + 0.5*float64(radius)*math.Cos(float64(i))
-		drawAt(int(x), int(y), colored('-', BrightGreen))
-		// time.Sleep(time.Millisecond * 100)
+	go func() {
+		radius := 25
+
+		for i := range 360 {
+			x := float64(xcenter) + float64(radius)*math.Sin(float64(i))
+			y := float64(ycenter) + 0.5*float64(radius)*math.Cos(float64(i))
+			drawAt(int(x), int(y), colored('-', BrightGreen))
+			time.Sleep(time.Millisecond * 100)
+		}
+		close++
+	}()
+
+	go func() {
+		for range 500 {
+			randomDraws(25, 10)
+			time.Sleep(time.Millisecond * 100)
+		}
+		close++
+	}()
+
+	for s := range schan {
+		if close > 1 {
+			break
+		}
+		drawAt(s.x, s.y, s.data)
 	}
 
 	drawAt(1, ycenter*3, Break)
@@ -118,7 +137,7 @@ func colorTest(scape string) {
 	}
 }
 
-func randomDraws(offset int) {
+func randomDraws(offset_x, offset_y int) {
 	x := rand.IntN(30)
 	y := rand.IntN(10)
 	bg := rand.IntN(256)
@@ -127,7 +146,7 @@ func randomDraws(offset int) {
 	sbg := strconv.Itoa(bg)
 	sfg := strconv.Itoa(fg)
 
-	drawAt(x, y+offset,
+	drawAt(x+offset_x, y+offset_y,
 		BG256+sbg+"m"+
 			Color256+sfg+"m"+"Ÿ"+Reset)
 }
