@@ -49,16 +49,6 @@ type drawData struct {
 func main() {
 	clearScreen()
 
-<<<<<<< HEAD
-=======
-	for range 2000 {
-		randomDraws(1)
-		time.Sleep(time.Millisecond)
-	}
-
-	drawAt(1, 11, Break)
-
->>>>>>> 80a7437c42c9ec2f2bb6b9d8e7c9b23336942f38
 	// drawAt(2, 2, colored('Ÿ', Black))
 	// drawAt(1, 2, colored('Ÿ', BrightBlack))
 	// drawAt(4, 2, colored('Ÿ', Red))
