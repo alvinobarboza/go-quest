@@ -28,14 +28,17 @@ const (
 	White         string = ESC + "[37m"
 	BrightWhite   string = ESC + "[37;1m"
 
-	Color256 string = ESC + "[38;5;"
-	BG256    string = ESC + "[48;5;"
+	C256  string = ESC + "[38;5;"
+	BG256 string = ESC + "[48;5;"
 
 	Reset   string = ESC + "[0m"
 	NoColor string = ""
 
-	TopLeft string = ESC + "[H"
-	Break   string = "\n\r"
+	TopLeft      string = ESC + "[H"
+	CLEAR_SCREEN string = ESC + "[2J"
+
+	LF    string = "\r"
+	Break string = LF + "\n"
 )
 
 type drawData struct {
@@ -46,6 +49,16 @@ type drawData struct {
 func main() {
 	clearScreen()
 
+<<<<<<< HEAD
+=======
+	for range 2000 {
+		randomDraws(1)
+		time.Sleep(time.Millisecond)
+	}
+
+	drawAt(1, 11, Break)
+
+>>>>>>> 80a7437c42c9ec2f2bb6b9d8e7c9b23336942f38
 	// drawAt(2, 2, colored('Ÿ', Black))
 	// drawAt(1, 2, colored('Ÿ', BrightBlack))
 	// drawAt(4, 2, colored('Ÿ', Red))
@@ -108,15 +121,29 @@ func main() {
 		drawAt(s.x, s.y, s.data)
 	}
 
+	w := 10
+	h := 10
+
+	mapData := mapGen()
+
+	for y := range h {
+		for x := range w {
+			index := y*w + x
+			char := mapData.char[index]
+			bgColored := mapData.bg_color[index] + char
+			drawAt(x+4, y+20, bgColored)
+		}
+	}
+
 	drawAt(1, ycenter*3, Break)
 }
 
 func clearScreen() {
-	fmt.Print("\x1b[2J", TopLeft)
+	fmt.Print(CLEAR_SCREEN, TopLeft)
 }
 
 func drawAt(x, y int, char string) {
-	fmt.Printf("\x1b[%d;%dH%s", y, x, char)
+	fmt.Printf("%s[%d;%dH%s", ESC, y, x, char)
 }
 
 func colored(char rune, color string) string {
@@ -148,5 +175,53 @@ func randomDraws(offset_x, offset_y int) {
 
 	drawAt(x+offset_x, y+offset_y,
 		BG256+sbg+"m"+
-			Color256+sfg+"m"+"Ÿ"+Reset)
+			C256+sfg+"m"+"Ÿ"+Reset)
+}
+
+type mapData struct {
+	bg_color []string
+	fg_color []string
+	char     []string
+}
+
+func mapGen() mapData {
+	mapT := mapData{
+		char: []string{
+			"0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+			"1", "2", "3", "4", "5", "6", "7", "8", "9", "0",
+			"2", "3", "4", "5", "6", "7", "8", "9", "0", "1",
+			"3", "4", "5", "6", "7", "8", "9", "0", "1", "2",
+			"4", "5", "6", "7", "8", "9", "0", "1", "2", "3",
+			"5", "6", "7", "8", "9", "0", "1", "2", "3", "4",
+			"6", "7", "8", "9", "0", "1", "2", "3", "4", "5",
+			"7", "8", "9", "0", "1", "2", "3", "4", "5", "6",
+			"8", "9", "0", "1", "2", "3", "4", "5", "6", "7",
+			"9", "0", "1", "2", "3", "4", "5", "6", "7", "8",
+		},
+		bg_color: []string{
+			BG256 + "149m", BG256 + "149m", BG256 + "149m", BG256 + "149m", BG256 + "149m",
+			BG256 + "149m", BG256 + "149m", BG256 + "149m", BG256 + "149m", BG256 + "149m",
+			BG256 + "149m", BG256 + "149m", BG256 + "149m", BG256 + "149m", BG256 + "149m",
+			BG256 + "149m", BG256 + "149m", BG256 + "149m", BG256 + "149m", BG256 + "149m",
+			BG256 + "143m", BG256 + "143m", BG256 + "143m", BG256 + "143m", BG256 + "143m",
+			BG256 + "143m", BG256 + "143m", BG256 + "143m", BG256 + "143m", BG256 + "143m",
+			BG256 + "143m", BG256 + "143m", BG256 + "63m", BG256 + "63m", BG256 + "143m",
+			BG256 + "143m", BG256 + "143m", BG256 + "63m", BG256 + "63m", BG256 + "63m",
+			BG256 + "143m", BG256 + "143m", BG256 + "63m", BG256 + "63m", BG256 + "63m",
+			BG256 + "143m", BG256 + "143m", BG256 + "63m", BG256 + "63m", BG256 + "143m",
+			BG256 + "143m", BG256 + "143m", BG256 + "143m", BG256 + "143m", BG256 + "143m",
+			BG256 + "143m", BG256 + "143m", BG256 + "143m", BG256 + "143m", BG256 + "143m",
+			BG256 + "143m", BG256 + "143m", BG256 + "143m", BG256 + "143m", BG256 + "143m",
+			BG256 + "143m", BG256 + "143m", BG256 + "143m", BG256 + "143m", BG256 + "143m",
+			BG256 + "143m", BG256 + "143m", BG256 + "143m", BG256 + "143m", BG256 + "143m",
+			BG256 + "143m", BG256 + "143m", BG256 + "143m", BG256 + "143m", BG256 + "143m",
+			BG256 + "143m", BG256 + "143m", BG256 + "143m", BG256 + "143m", BG256 + "143m",
+			BG256 + "143m", BG256 + "143m", BG256 + "143m", BG256 + "143m", BG256 + "143m",
+			BG256 + "143m", BG256 + "143m", BG256 + "143m", BG256 + "143m", BG256 + "143m",
+			BG256 + "143m", BG256 + "143m", BG256 + "143m", BG256 + "143m", BG256 + "143m",
+		},
+		fg_color: []string{},
+	}
+
+	return mapT
 }
