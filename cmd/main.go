@@ -79,7 +79,8 @@ func main() {
 	// colorTest(BG256)
 
 	schan := make(chan drawData)
-	close := 0
+	exit1 := make(chan string)
+	exit2 := make(chan string)
 
 	ycenter := 15
 	xcenter := 40
@@ -91,25 +92,26 @@ func main() {
 			x := float64(xcenter) + float64(radius)*math.Sin(float64(i))
 			y := float64(ycenter) + 0.5*float64(radius)*math.Cos(float64(i))
 			drawAt(int(x), int(y), colored('-', BrightGreen))
-			time.Sleep(time.Millisecond * 100)
+			time.Sleep(time.Millisecond * 33)
 		}
-		close++
+		exit1 <- " Circle "
 	}()
 
 	go func() {
 		for range 500 {
 			randomDraws(25, 10)
-			time.Sleep(time.Millisecond * 100)
+			time.Sleep(time.Millisecond * 33)
 		}
-		close++
+		exit2 <- "random " + <-exit1
 	}()
 
-	for s := range schan {
-		if close > 1 {
-			break
+	go func() {
+		for s := range schan {
+			drawAt(s.x, s.y, s.data)
 		}
-		drawAt(s.x, s.y, s.data)
-	}
+	}()
+
+	drawAt(0, ycenter, <-exit2)
 
 	w := 10
 	h := 10
@@ -121,7 +123,7 @@ func main() {
 			index := y*w + x
 			char := mapData.char[index]
 			bgColored := mapData.bg_color[index] + char
-			drawAt(x+4, y+20, bgColored)
+			drawAt(x+4, y+20, bgColored+Reset)
 		}
 	}
 
@@ -177,16 +179,16 @@ type mapData struct {
 func mapGen() mapData {
 	mapT := mapData{
 		char: []string{
-			"0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
-			"1", "2", "3", "4", "5", "6", "7", "8", "9", "0",
-			"2", "3", "4", "5", "6", "7", "8", "9", "0", "1",
-			"3", "4", "5", "6", "7", "8", "9", "0", "1", "2",
-			"4", "5", "6", "7", "8", "9", "0", "1", "2", "3",
-			"5", "6", "7", "8", "9", "0", "1", "2", "3", "4",
-			"6", "7", "8", "9", "0", "1", "2", "3", "4", "5",
-			"7", "8", "9", "0", "1", "2", "3", "4", "5", "6",
-			"8", "9", "0", "1", "2", "3", "4", "5", "6", "7",
-			"9", "0", "1", "2", "3", "4", "5", "6", "7", "8",
+			" 0 ", " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 ", " 9 ",
+			" 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 ", " 9 ", " 0 ",
+			" 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 ", " 9 ", " 0 ", " 1 ",
+			" 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 ", " 9 ", " 0 ", " 1 ", " 2 ",
+			" 4", " 5 ", " 6 ", " 7 ", " 8 ", " 9 ", " 0 ", " 1 ", " 2 ", " 3 ",
+			" 5", " 6 ", " 7 ", " 8 ", " 9 ", " 0 ", " 1 ", " 2 ", " 3 ", " 4 ",
+			" 6", " 7 ", " 8 ", " 9 ", " 0 ", " 1 ", " 2 ", " 3 ", " 4 ", " 5 ",
+			" 7", " 8 ", " 9 ", " 0 ", " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ",
+			" 8", " 9 ", " 0 ", " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ",
+			" 9", " 0 ", " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 ",
 		},
 		bg_color: []string{
 			BG256 + "149m", BG256 + "149m", BG256 + "149m", BG256 + "149m", BG256 + "149m",
