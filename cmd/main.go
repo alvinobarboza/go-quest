@@ -82,27 +82,32 @@ func main() {
 	exit1 := make(chan string)
 	exit2 := make(chan string)
 
-	ycenter := 15
-	xcenter := 40
+	ycenter := 60
+	xcenter := 220
+
+	randomSeed := 100
+	sleepTime := 33
+	angle := 360
 
 	go func() {
 		radius := 25
 
-		for i := range 360 {
-			x := float64(xcenter) + float64(radius)*math.Sin(float64(i))
-			y := float64(ycenter) + 0.5*float64(radius)*math.Cos(float64(i))
+		for i := range angle {
+			radians := float64(i) * (math.Pi / 180.0)
+			x := float64(xcenter) + float64(radius)*math.Cos(float64(radians))
+			y := float64(ycenter) + 0.5*float64(radius)*math.Sin(float64(radians))
 			drawAt(int(x), int(y), colored('-', BrightGreen))
-			time.Sleep(time.Millisecond * 33)
+			time.Sleep(time.Millisecond * time.Duration(sleepTime*randomSeed/angle))
 		}
-		exit1 <- " Circle "
+		exit1 <- ""
 	}()
 
 	go func() {
-		for range 500 {
-			randomDraws(25, 10)
-			time.Sleep(time.Millisecond * 33)
+		for range randomSeed {
+			randomDraws(xcenter, ycenter)
+			time.Sleep(time.Millisecond * time.Duration(sleepTime))
 		}
-		exit2 <- "random " + <-exit1
+		exit2 <- "" + <-exit1
 	}()
 
 	go func() {
@@ -113,19 +118,19 @@ func main() {
 
 	drawAt(0, ycenter, <-exit2)
 
-	w := 10
-	h := 10
+	// w := 10
+	// h := 10
 
-	mapData := mapGen()
+	// mapData := mapGen()
 
-	for y := range h {
-		for x := range w {
-			index := y*w + x
-			char := mapData.char[index]
-			bgColored := mapData.bg_color[index] + char
-			drawAt(x+4, y+20, bgColored+Reset)
-		}
-	}
+	// for y := range h {
+	// 	for x := range w {
+	// 		index := y*w + x
+	// 		char := mapData.char[index]
+	// 		bgColored := mapData.bg_color[index] + char
+	// 		drawAt(x+4, y+20, bgColored+Reset)
+	// 	}
+	// }
 
 	drawAt(1, ycenter*3, Break)
 }
@@ -157,15 +162,18 @@ func colorTest(scape string) {
 }
 
 func randomDraws(offset_x, offset_y int) {
-	x := rand.IntN(30)
-	y := rand.IntN(10)
+	w := 30
+	h := 10
+
+	x := rand.IntN(w)
+	y := rand.IntN(h)
 	bg := rand.IntN(256)
 	fg := rand.IntN(256)
 
 	sbg := strconv.Itoa(bg)
 	sfg := strconv.Itoa(fg)
 
-	drawAt(x+offset_x, y+offset_y,
+	drawAt((offset_x-(w/2))+x, (offset_y-(h/2))+y,
 		BG256+sbg+"m"+
 			C256+sfg+"m"+"Ÿ"+Reset)
 }
