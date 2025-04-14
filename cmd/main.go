@@ -40,12 +40,33 @@ const (
 func main() {
 	clearScreen()
 	m := mapGen()
+	colors := map[string]string{
+		"~": "20",
+		"T": "94",
+		"O": "242",
+		"o": "241",
+		"#": "22",
+		"W": "70",
+		"w": "71",
+		".": "234",
+		":": "64",
+		"$": "10",
+		"|": "130",
+		"@": "232",
+		"+": "243",
+		"0": "240",
+		"-": "130",
+	}
 
 	for y := range m.h {
 		for x := range m.w {
 			index := y*m.w + x
+			c := m.char[index]
 			drawAt(x+1, y+1, colored(
-				m.char[index], color256(BG256, "28"),
+				colored(
+					c, color256(C256, colors[c]),
+				),
+				color256(BG256, colors[c]),
 			))
 		}
 	}
